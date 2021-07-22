@@ -26,6 +26,12 @@ const adv = [
 
 let advnum = 0;
 
+images = {
+    "energy": null,
+    "water": null,
+    "fire": null,
+};
+
 bookoflife = [
     {
         input: ["energy", "energy"],
@@ -173,7 +179,16 @@ bookoflife = [
         delay: 0.01,
     },
 ];
-for (let i = 0; i < bookoflife.length; i++) bookoflife[i].unlocked = false;
+for (let i = 0; i < bookoflife.length; i++) {
+    bookoflife[i].unlocked = false;
+    images[bookoflife[i].text] = null;
+}
+Object.keys(images).forEach(i => {
+    images[i] = Object.assign(
+        document.createElement("img"),
+        { src: `${i}.png` }
+    );
+});
 
 const tree_objects = [
     {
@@ -188,8 +203,35 @@ const tree_objects = [
         activatedTimer: 0,
         shaded: false,
         charged: false,
+        images: [],
     },
 ];
+
+/*
+for (let i = 0; i < Object.keys(images).length; i++) {
+    tree_objects.push({
+        x: i * 150,
+        y: 500,
+        xvel: 0,
+        yvel: 0,
+        text: Object.keys(images)[i],
+        delay: 1,
+        seconds: 0,
+        activated: false,
+        activatedTimer: 0,
+        shaded: false,
+        charged: false,
+        images: [{
+            rot: 4,
+            rev: 4,
+            rotspeed: 4,
+            revspeed: 4,
+            outward: 60,
+        }],
+    });
+}
+*/
+
 
 const camera = {
     x: window.innerWidth / -2,
@@ -258,10 +300,37 @@ const update = () => {
         CTX.font = "20px Verdana";
         CTX.fillText(tree_objects[i].text, tree_objects[i].x - camera.x - CTX.measureText(tree_objects[i].text).width / 2, tree_objects[i].y - camera.y - 120);
 
+        for (let img = 0; img < tree_objects[i].images.length; img++) {
+            CTX.save();
+            CTX.translate(
+                tree_objects[i].x - camera.x + (Math.cos(tree_objects[i].images[img].rev * Math.PI / 180) * tree_objects[i].images[img].outward),
+                tree_objects[i].y - camera.y + (Math.sin(tree_objects[i].images[img].rev * Math.PI / 180) * tree_objects[i].images[img].outward),
+            );
+            CTX.rotate(tree_objects[i].images[img].rot * Math.PI / 180)
+            CTX.drawImage(
+                images[tree_objects[i].text],
+                -25, -25,
+                50, 50);
+            CTX.restore();
+            tree_objects[i].images[img].rot += tree_objects[i].images[img].rotspeed;
+            tree_objects[i].images[img].rev += tree_objects[i].images[img].revspeed;
+            tree_objects[i].images[img].rot %= 360;
+            tree_objects[i].images[img].rev %= 360;
+        };
+
         if (tree_objects[i].activated) {
             tree_objects[i].activatedTimer++;
             tree_objects[i].seconds += 1 / 60;
             if (tree_objects[i].seconds > tree_objects[i].delay) {
+                neg = Math.round(Math.random());
+                if (neg === 0) neg--;
+                tree_objects[i].images.push({
+                    rotspeed: Math.random() * 5 * neg,
+                    revspeed: Math.random() * 5,
+                    rot: Math.random() * 360,
+                    rev: Math.random() * 360,
+                    outward: Math.random() * 60 + 40,
+                });
                 Object.assign(tree_objects[i], {
                     activated: false,
                     activatedTimer: 0,
@@ -282,6 +351,7 @@ const update = () => {
                             activated: false,
                             activatedTimer: 0,
                             shaded: false,
+                            images: [],
                         });
                         tree_objects.push({
                             x: -300,
@@ -295,6 +365,7 @@ const update = () => {
                             activatedTimer: 0,
                             shaded: false,
                             charged: false,
+                            images: [],
                         });
                         tree_objects.push({
                             x: 300,
@@ -308,6 +379,7 @@ const update = () => {
                             activatedTimer: 0,
                             shaded: false,
                             charged: false,
+                            images: [],
                         });
                         initcombo += 2;
                         if (!adv[1].flag) {
@@ -329,6 +401,7 @@ const update = () => {
                         activated: false,
                         activatedTimer: 0,
                         shaded: false,
+                        images: [],
                     });
                 }
                 if (tree_objects[i].text === "water") {
@@ -344,6 +417,7 @@ const update = () => {
                         activated: false,
                         activatedTimer: 0,
                         shaded: false,
+                        images: [],
                     });
                 }
 
@@ -432,6 +506,7 @@ const update = () => {
                                     activatedTimer: 0,
                                     shaded: false,
                                     charged: false,
+                                    images: [],
                                 });
                                 if (!adv[3].flag) {
                                     adv[3].flag = true;
