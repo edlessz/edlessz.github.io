@@ -430,16 +430,33 @@ const update = () => {
     };
 
     items = Object.keys(inv);
-    targetLength += (items.length - targetLength) / 10;
+
+
+    let totals = {};
+    tree_objects.forEach(e => {
+        if (!totals.hasOwnProperty(e.text)) totals[e.text] = 0;
+        totals[e.text]++;
+    });
+    let charged = {};
+    tree_objects.forEach(e => {
+        if (!charged.hasOwnProperty(e.text)) charged[e.text] = 0;
+        if (e.charged) charged[e.text]++;
+    });
+
     for (let i = 0; i < items.length; i++) {
         if (inv[items[i]] === 0) delete inv[items[i]];
+    }
 
-        if (camera.mouseX > 20 && camera.mouseX < 20 + CTX.measureText(`${inv[items[i]]} | ${items[i]}`).width &&
+    targetLength += (Object.keys(totals).length - targetLength) / 10;
+
+    for (let i = 0; i < Object.keys(totals).length; i++) {
+        let ij = Object.keys(totals)[i];
+        if (camera.mouseX > 20 && camera.mouseX < 20 + CTX.measureText(`${charged[ij]}/${totals[ij]} | ${ij}`).width &&
             camera.mouseY > window.innerHeight - (targetLength - (i)) * 21 - 21 && camera.mouseY < window.innerHeight - (targetLength - (i)) * 21) {
             CTX.fillStyle = "#00ff00";
             if (camera.mouseDown) {
                 tree_objects.forEach(j => {
-                    if (j.charged && j.text === items[i]) {
+                    if (j.text === ij) {
                         camera.x = j.x - window.innerWidth / 2;
                         camera.y = j.y - window.innerHeight / 2;
                     }
@@ -448,7 +465,7 @@ const update = () => {
         } else {
             CTX.fillStyle = "#000000";
         }
-        CTX.fillText(`${inv[items[i]]} | ${items[i]}`, 20, window.innerHeight - (targetLength - (i)) * 21);
+        CTX.fillText(`${charged[ij]}/${totals[ij]} | ${ij}`, 20, window.innerHeight - (targetLength - (i)) * 21);
     };
 
     unlocked = bookoflife.filter(i => i.unlocked).length;
