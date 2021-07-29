@@ -1,6 +1,6 @@
 const CANVAS = document.querySelector("canvas");
 const CTX = CANVAS.getContext("2d");
-const tilesize = 64;
+let tilesize = 64;
 let ogprefab = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -35,6 +35,8 @@ let ogprefab = [
     [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0],
     [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0]
 ];
+
+console.log("VERSION 1.1");
 
 let scan = {
     angle: 0,
@@ -320,6 +322,8 @@ const player = {
     enemies: {},
     grapple: "green_hand",
     skin: "kidoyo",
+    pregrappleX: 3,
+    pregrappleY: 22,
 };
 const mouse = {
     x: 0,
@@ -373,13 +377,15 @@ if (localStorage.getItem("edwardscamera.sticktogether.coin") === null) localStor
         }
         localStorage.setItem("edwardscamera.sticktogether.skins", total);
     } else {
-        for (let i = 0; i < lcl.length; i++) {
-            if (lcl[i] == 0) skins[Object.keys(skins)[i]].unlocked = false;
-            if (lcl[i] > 0) skins[Object.keys(skins)[i]].unlocked = true;
-            if (lcl[i] == 2) player.skin = Object.keys(skins)[i];
-        }
-        while (lcl.length < Object.keys(skins).length) lcl += "0";
-        localStorage.setItem("edwardscamera.sticktogether.skins", lcl);
+        try {
+            for (let i = 0; i < lcl.length; i++) {
+                if (lcl[i] == 0) skins[Object.keys(skins)[i]].unlocked = false;
+                if (lcl[i] > 0) skins[Object.keys(skins)[i]].unlocked = true;
+                if (lcl[i] == 2) player.skin = Object.keys(skins)[i];
+            }
+            while (lcl.length < Object.keys(skins).length) lcl += "0";
+            localStorage.setItem("edwardscamera.sticktogether.skins", lcl);
+        } catch (e) { }
     }
 })();
 
@@ -410,7 +416,7 @@ const updateGrapples = () => {
             player.grapple = grapple;
             let lcl = "";
             for (let i = 0; i < Object.keys(grapples).length; i++) {
-                if (player.grapple === Object.keys(grapples)[i]) {
+                if (player.grapple == Object.keys(grapples)[i]) {
                     lcl += "2";
                 } else {
                     if (grapples[Object.keys(grapples)[i]].unlocked) lcl += "1";
@@ -420,16 +426,17 @@ const updateGrapples = () => {
             localStorage.setItem("edwardscamera.sticktogether.grapples", lcl);
             updateGrapples();
         };
-        if (!grappledata.unlocked) thisbtn.onclick = () => {
-            if (player.coins >= grappledata.cost) {
+        thisbtn.grappledata = grappledata;
+        if (!thisbtn.grappledata.unlocked) thisbtn.onclick = () => {
+            if (player.coins >= thisbtn.grappledata.cost) {
                 grapples[grapple].unlocked = true;
-                player.coins -= grappledata.cost;
+                player.coins -= thisbtn.grappledata.cost;
                 (new Audio("./sounds/coin.wav")).play();
                 localStorage.setItem("edwardscamera.sticktogether.coin", player.coins);
                 player.grapple = grapple;
                 let lcl = "";
                 for (let i = 0; i < Object.keys(grapples).length; i++) {
-                    if (player.grapple === Object.keys(grapples)[i]) {
+                    if (player.grapple == Object.keys(grapples)[i]) {
                         lcl += "2";
                     } else {
                         if (grapples[Object.keys(grapples)[i]].unlocked) lcl += "1";
@@ -486,10 +493,11 @@ const updateSkins = () => {
             localStorage.setItem("edwardscamera.sticktogether.skins", lcl);
             updateSkins();
         };
-        if (!skindata.unlocked) thisbtn.onclick = () => {
-            if (player.coins >= skindata.cost) {
+        thisbtn.skindata = skindata;
+        if (!thisbtn.skindata.unlocked) thisbtn.onclick = () => {
+            if (player.coins >= thisbtn.skindata.cost) {
                 skins[skin].unlocked = true;
-                player.coins -= skindata.cost;
+                player.coins -= thisbtn.skindata.cost;
                 (new Audio("./sounds/coin.wav")).play();
                 player.skin = skin;
                 localStorage.setItem("edwardscamera.sticktogether.coin", player.coins);
@@ -652,8 +660,11 @@ const update = () => {
         case 1:
             CTX.save();
             CTX.translate(mouse.grappleX - camera.x, mouse.grappleY - camera.y);
-            if (mouse.ropeAngleVelocity < 0) CTX.scale(1, -1);
-            CTX.rotate(mouse.ropeAngle * Math.sign(mouse.ropeAngleVelocity));
+            let myscale = 1;
+            if (mouse.ropeAngleVelocity < 0) myscale = -1;
+            if (mouse.ropeAngleVelocity < 0.004 && mouse.ropeAngleVelocity > -0.004) myscale = 1
+            CTX.scale(1, myscale);
+            CTX.rotate(mouse.ropeAngle * Math.sign(myscale));
             CTX.drawImage(images[skins[player.skin]["2"]], tilesize / -2 - mouse.ropeLength, tilesize / -2, tilesize, tilesize);
             CTX.restore();
             player.rotation = mouse.ropeAngle;
@@ -771,49 +782,94 @@ const update = () => {
             mouse.ropeAngleVelocity += ropeAngleAcceleration;
             mouse.ropeAngle += mouse.ropeAngleVelocity;
 
+            let updatePhys = () => {
+                mouse.ropeAngleVelocity *= 0.99;
+
+                mouse.ropeX = mouse.grappleX + Math.cos(mouse.ropeAngle + Math.PI) * mouse.ropeLength;
+                mouse.ropeY = mouse.grappleY + Math.sin(mouse.ropeAngle + Math.PI) * mouse.ropeLength;
+
+                player.x = mouse.ropeX / tilesize - 0.5;
+                player.y = mouse.ropeY / tilesize - 0.5;
+
+                mouse.changeX = player.x - mouse.oldX;
+                mouse.changeY = player.y - mouse.oldY;
+
+                mouse.oldX = player.x;
+                mouse.oldY = player.y;
+
+                player.velocityY = 0;
+            };
+
             try {
+                let whilesteps = 0;
                 let tempx = (mouse.grappleX + Math.cos(mouse.ropeAngle + Math.PI) * mouse.ropeLength) / tilesize;
                 let tempy = mouse.ropeY / tilesize;
-                if (
-                    world[Math.floor(tempy - 0.5)][Math.floor(tempx + 0.5)] === 1 ||
-                    world[Math.floor(tempy + 0.5)][Math.floor(tempx + 0.5)] === 1 ||
-                    world[Math.floor(tempy - 0.5)][Math.floor(tempx - 0.5)] === 1 ||
-                    world[Math.floor(tempy + 0.5)][Math.floor(tempx - 0.5)] === 1
+                while (
+                    world[Math.min(Math.floor(tempy - 0.5), world.length - 1)][Math.floor(tempx + 0.5)] === 1 ||
+                    world[Math.min(Math.floor(tempy + 0.5), world.length - 1)][Math.floor(tempx + 0.5)] === 1 ||
+                    world[Math.min(Math.floor(tempy - 0.5), world.length - 1)][Math.floor(tempx - 0.5)] === 1 ||
+                    world[Math.min(Math.floor(tempy + 0.5), world.length - 1)][Math.floor(tempx - 0.5)] === 1
                 ) {
-                    mouse.ropeAngle -= mouse.ropeAngleVelocity;
+                    if (whilesteps > 100) {
+                        console.log("WHILE LOOP EXCEPTION", mouse, player);
+                        player.x = player.pregrappleX;
+                        player.velocityX = 0;
+                        player.y = player.pregrappleY;
+                        player.velocityY = 0;
+                        window.setTimeout(() => {
+                            player.x = player.pregrappleX;
+                            player.velocityX = 0;
+                            player.y = player.pregrappleY;
+                            player.velocityY = 0;
+                        }, 10);
+                        mouse.left = false;
+                        break;
+                    }
+                    whilesteps++;
+                    mouse.ropeAngle -= mouse.ropeAngleVelocity * 2;
                     mouse.ropeAngleVelocity *= -1;
+                    tempx = (mouse.grappleX + Math.cos(mouse.ropeAngle + Math.PI) * mouse.ropeLength) / tilesize;
+                    tempy = mouse.ropeY / tilesize;
+                    updatePhys();
                 }
 
                 tempx = mouse.ropeX / tilesize;
                 tempy = (mouse.grappleY + Math.sin(mouse.ropeAngle + Math.PI) * mouse.ropeLength) / tilesize;
-                if (
-                    world[Math.floor(tempy - 0.5)][Math.floor(tempx + 0.5)] === 1 ||
-                    world[Math.floor(tempy + 0.5)][Math.floor(tempx + 0.5)] === 1 ||
-                    world[Math.floor(tempy - 0.5)][Math.floor(tempx - 0.5)] === 1 ||
-                    world[Math.floor(tempy + 0.5)][Math.floor(tempx - 0.5)] === 1
+                whilesteps = 0;
+                while (
+                    world[Math.min(Math.floor(tempy - 0.5), world.length - 1)][Math.floor(tempx + 0.5)] === 1 ||
+                    world[Math.min(Math.floor(tempy + 0.5), world.length - 1)][Math.floor(tempx + 0.5)] === 1 ||
+                    world[Math.min(Math.floor(tempy - 0.5), world.length - 1)][Math.floor(tempx - 0.5)] === 1 ||
+                    world[Math.min(Math.floor(tempy + 0.5), world.length - 1)][Math.floor(tempx - 0.5)] === 1
                 ) {
-                    mouse.ropeAngle -= mouse.ropeAngleVelocity;
+                    if (whilesteps > 100) {
+                        console.log("WHILE LOOP EXCEPTION", mouse, player);
+
+                        player.x = player.pregrappleX;
+                        player.velocityX = 0;
+                        player.y = player.pregrappleY;
+                        player.velocityY = 0;
+                        window.setTimeout(() => {
+                            player.x = player.pregrappleX;
+                            player.velocityX = 0;
+                            player.y = player.pregrappleY;
+                            player.velocityY = 0;
+                        }, 10);
+                        mouse.left = false;
+                        break;
+                    }
+                    whilesteps++;
+                    mouse.ropeAngle -= mouse.ropeAngleVelocity * 2;
                     mouse.ropeAngleVelocity = 0;
+                    tempx = mouse.ropeX / tilesize;
+                    tempy = (mouse.grappleY + Math.sin(mouse.ropeAngle + Math.PI) * mouse.ropeLength) / tilesize;
+                    updatePhys();
                 }
             } catch (e) {
 
             }
 
-            mouse.ropeAngleVelocity *= 0.99;
-
-            mouse.ropeX = mouse.grappleX + Math.cos(mouse.ropeAngle + Math.PI) * mouse.ropeLength;
-            mouse.ropeY = mouse.grappleY + Math.sin(mouse.ropeAngle + Math.PI) * mouse.ropeLength;
-
-            player.x = mouse.ropeX / tilesize - 0.5;
-            player.y = mouse.ropeY / tilesize - 0.5;
-
-            mouse.changeX = player.x - mouse.oldX;
-            mouse.changeY = player.y - mouse.oldY;
-
-            mouse.oldX = player.x;
-            mouse.oldY = player.y;
-
-            player.velocityY = 0;
+            updatePhys();
 
             tempx = mouse.ropeX / tilesize;
             tempy = (mouse.grappleY + Math.sin(mouse.ropeAngle + Math.PI) * mouse.ropeLength) / tilesize;
@@ -992,7 +1048,11 @@ const update = () => {
 
     frameCount++;
 };
-window.onmousedown = () => {
+window.onmousedown = (evt) => {
+    player.pregrappleX = player.x;
+    player.pregrappleY = player.y;
+
+    if (![0, 2].includes(evt.button)) return;
 
     mouse.grappleX = camera.x + mouse.x;
     mouse.grappleY = camera.y + mouse.y;
@@ -1027,7 +1087,7 @@ window.onmousedown = () => {
     if (mouse.ropeLength > mouse.maxDistance) return;
     if (Math.floor(scan.y / tilesize) === 0) return;
     if (player.state !== 0) return;
-
+    //if (scan.steps < tilesize) return;
     (new Audio("./sounds/grapple.wav")).play();
 
     mouse.left = true;
