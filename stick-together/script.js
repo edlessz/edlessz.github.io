@@ -36,7 +36,7 @@ let ogprefab = [
     [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0]
 ];
 
-console.log("VERSION 1.1");
+console.log("VERSION 1.2");
 
 let scan = {
     angle: 0,
@@ -261,7 +261,7 @@ let skins = {
         "1": "1_martian",
         "2": "2_martian",
         "text": "KidOYO Martian",
-        "cost": 200,
+        "cost": 100,
         "unlocked": false,
     },
     "lucky": {
@@ -269,7 +269,7 @@ let skins = {
         "1": "1_lucky",
         "2": "2_lucky",
         "text": "Lucky KidOYO Bot",
-        "cost": 200,
+        "cost": 100,
         "unlocked": false,
     },
     "impostor": {
@@ -277,7 +277,7 @@ let skins = {
         "1": "1_impostor",
         "2": "2_impostor",
         "text": "Impostor",
-        "cost": 500,
+        "cost": 250,
         "unlocked": false,
     },
     "cowboy": {
@@ -285,7 +285,7 @@ let skins = {
         "1": "1_cowboy",
         "2": "2_cowboy",
         "text": "Space Cowboy Bezos",
-        "cost": 1000,
+        "cost": 500,
         "unlocked": false,
     },
     "dev": {
@@ -293,7 +293,7 @@ let skins = {
         "1": "1_dev",
         "2": "2_dev",
         "text": "Dev",
-        "cost": 1000,
+        "cost": 600,
         "unlocked": false,
     },
 }
@@ -633,7 +633,12 @@ const update = () => {
     for (let i = 0; i < clouds.background.length; i++) {
         mycloud = clouds.background[i];
         if (mycloud.x + mycloud.size * 64 < camera.x) clouds.background[i].x = camera.x + CANVAS.width;
-        CTX.drawImage(images["cloud"], mycloud.x - camera.x, mycloud.y - camera.y, mycloud.size * 64, mycloud.size * 32);
+        CTX.save();
+        CTX.translate(mycloud.x - camera.x, mycloud.y - camera.y);
+        if (mycloud.orientation === -1) CTX.scale(-1, 1);
+        if (mycloud.orientation === 1) CTX.drawImage(images["cloud"], 0, 0, mycloud.size * 64, mycloud.size * 32);
+        if (mycloud.orientation === -1) CTX.drawImage(images["cloud"], -mycloud.size * 64, 0, mycloud.size * 64, mycloud.size * 32);
+        CTX.restore();
         clouds.background[i].x -= mycloud.size;
     }
 
@@ -999,16 +1004,6 @@ const update = () => {
         CTX.restore();
     });
 
-    // Draw Foreground Clouds
-    for (let i = 0; i < clouds.foreground.length; i++) {
-        CTX.globalAlpha = 0.5;
-        mycloud = clouds.foreground[i];
-        if (mycloud.x + mycloud.size * 64 < camera.x) clouds.foreground[i].x = camera.x + CANVAS.width;
-        CTX.drawImage(images["cloud"], mycloud.x - camera.x, mycloud.y - camera.y, mycloud.size * 64, mycloud.size * 32);
-        clouds.foreground[i].x -= mycloud.size;
-        CTX.globalAlpha = 1;
-    }
-
     // Camera Logic
     camera.origX = (player.x * tilesize) - (CANVAS.width / 2) + (tilesize / 2);
     camera.origY = (player.y * tilesize) - (CANVAS.height / 2) + (tilesize / 2);
@@ -1058,7 +1053,7 @@ window.onmousedown = (evt) => {
     mouse.grappleY = camera.y + mouse.y;
     mouse.ropeX = (player.x + 0.5) * tilesize;
     mouse.ropeY = (player.y + 0.5) * tilesize;
-    mouse.ropeAngleVelocity = player.velocityY * 0.1;
+    mouse.ropeAngleVelocity = (player.velocityY + player.velocityX) * 0.1;
     if (mouse.ropeX < mouse.grappleX) mouse.ropeAngleVelocity *= -1;
     mouse.ropeAngle = Math.atan2(mouse.grappleY - mouse.ropeY, mouse.grappleX - mouse.ropeX);
     mouse.ropeLength = Math.sqrt(
@@ -1095,7 +1090,7 @@ window.onmousedown = (evt) => {
     mouse.grappleY = scan.y;
     mouse.ropeX = (player.x + 0.5) * tilesize;
     mouse.ropeY = (player.y + 0.5) * tilesize;
-    mouse.ropeAngleVelocity = player.velocityY * 0.1;
+    mouse.ropeAngleVelocity = (player.velocityY + player.velocityX) * 0.1;
     if (mouse.ropeX < mouse.grappleX) mouse.ropeAngleVelocity *= -1;
     mouse.ropeAngle = Math.atan2(mouse.grappleY - mouse.ropeY, mouse.grappleX - mouse.ropeX);
     mouse.ropeLength = Math.sqrt(
