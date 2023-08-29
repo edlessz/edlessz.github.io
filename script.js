@@ -218,6 +218,7 @@ window.addEventListener("load", () => {
         $("#music-albumcover").alt = mostRecentTrack.album["#text"];
         $("#music-title").innerText = mostRecentTrack.name;
         $("#music-artist").innerText = mostRecentTrack.artist["#text"];
+        $("#music-album").innerText = mostRecentTrack.album["#text"];
         $("#music-mostrecenttrack .music-timestamp").innerText = mostRecentTrack["@attr"]?.nowplaying ? "Now Playing" : mostRecentTrack.date["#text"];
         
         if (is_fine) $("#music-smallTracks").style.display = "table";
@@ -227,6 +228,7 @@ window.addEventListener("load", () => {
             trackElm.innerHTML = `
                 <td>${trackData.name}</td>
                 <td>${trackData.artist["#text"]}</td>
+                <td>${trackData.album["#text"]}</td>
                 <td class="music-timestamp">${trackData.date["#text"]}</td>
             `;
             $("#music-smallTracks").appendChild(trackElm);
