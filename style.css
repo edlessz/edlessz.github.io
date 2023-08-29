@@ -26,6 +26,8 @@ a {
     margin: 50px;
     display: flex;
 }
+.content-card > *:first-child { margin-top: 0px; }
+
 @media (pointer:none), (pointer:coarse) {
     #navbar {
         position: fixed;
