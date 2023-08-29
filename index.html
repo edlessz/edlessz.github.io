@@ -1,65 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>edwardscamera.com</title>
-    <link rel="stylesheet" href="./stylesheet.css">
-    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.ico">
+    <title>edwardscamera</title>
+    <link rel="stylesheet" href="./style.css">
 </head>
-
 <body>
-    <canvas></canvas>
-    <script src="script.js"></script>
-    <div id="title">
-        <h1>
-            edwardscamera
-        </h1>
-        <p style="cursor:pointer;" onclick="window.scrollTo({'top': window.innerHeight, 'behavior': 'smooth'})">scroll
-            for more</p>
+    <div id="navbar">
+        <div markerTarget="Home"><i class="fa-solid fa-house fa-2xs fa-fw"></i><span>Home</span></div>
+        <div markerTarget="AboutMe"><i class="fa-solid fa-user fa-2xs fa-fw"></i><span>About Me</span></div>
+        <div markerTarget="Career"><i class="fa-solid fa-suitcase fa-2xs fa-fw"></i><span>Career Experience</span></div>
+        <div markerTarget="PersonalProjects"><i class="fa-solid fa-gamepad fa-2xs fa-fw"></i><span>Personal Projects</span></div>
+        <div markerTarget="FindMe"><i class="fa-solid fa-mobile-screen fa-2xs fa-fw"></i><span>Socials</span></div>
+        <div markerTarget="Contact"><i class="fa-solid fa-envelope fa-2xs fa-fw"></i><span>Contact</span></div>
     </div>
-    <div class="pageContent">
-        <h1>Who are you?</h1>
-        <center>
-            <div class="content">Hey, I'm Ed. I'm a freshman in college studying computer science at the University of Stony Brook. If you couldn't tell, I
-                have an interest in computer programming, particularly web stuff. I love designing websites and making
-                games
-                for my friends during my spare time. Some of my other hobbies include listening to music, taking
-                pictures,
-                and playing the cello.
+    <div id="title">
+        <canvas marker="Home"></canvas>
+        <h1>edwardscamera</h1>
+    </div>
+    <div id="content">
+        <div class="content-card" marker="AboutMe">
+            <h1>Hey there!</h1>
+            <p>I'm Ed, a Computer Science major currently in my freshman year at Stony Brook University. I'm passionate about technology and all things code-related. I love tackling challenging problems and finding creative solutions.</p>
+            <p>Ever since I could remember, I've always been fascinated by the world of programming and software development. My love of math in high school only drew me closer to the field. I've been making video games for my own enjoyment ever since I was 10 years old. Whether it's building web applications or developing games, I'm always eager to learn more.</p>
+            <p>My future goal is to become a proficient software developer, working on exciting projects that make a real impact on daily lives.</p>
+            <p>Some of my other hobbies and interests include listening to and collecting music, playing the cello, and photography.</p>
+            <h3>Education</h3>
+            <ul>
+                <li><strong>Current Student:</strong> Stony Brook University, Freshman</li>
+                <li><strong>Major:</strong> Computer Science</li>
+            </ul>
+            <h3>Skills</h3>
+            <ul>
+                <li><strong>Languages: </strong>HTML, JavaScript, TypeScript, CSS, Python, Java, C#</li>
+                <li><strong>Frameworks & Libraries: </strong>Angular, React, Node.js</li>
+                <li><strong>Game Development: </strong>HTML5 Game Dev, Unity, GameMaker Studio 2</li>
+            </ul>
+        </div>
+        <div class="content-card" marker="Career">
+            <h2>Career Experience</h2>
+            <div class="career">
+                <h3>
+                    Software Development & IT Intern<br/>
+                    <a href="https://www.naii.com/" target="_blank">North Atlantic Industries</a> | Jun 2023 - Aug 2023
+                </h3>
+                <p>As an intern at North Atlantic Industries, I designed and developed web applications for internal use. Using Angular, C#, and SQL databases, I created user-friendly solutions that automated operations, provided organizatoin, and improved efficiency. This experience at North Atlantic Industries has significantly enhanced my technical skills with real-world problems, and reinforced my commitment to driving innovation in the field of software development. It also provided a great opportunity to learn how to collaborate on a project.</p>
             </div>
-            <br />
-            <div class="content">I'm currently moving website hosts. This site is under construction until further notice.</div>
-        </center>
-        <h1 style="margin-top: 50px;">Social</h1>
-        <div id="contact">
-            <a target="_blank" href="https://twitter.com/edwardscamera"><img src="./images/twitter.png"></a>
-            <a target="_blank" href="https://instagram.com/edwardscamera"><img src="./images/instagram.png"></a>
-            <a target="_blank" href="https://github.com/edwardscamera"><img src="./images/github.png"></a>
-            <a target="_blank" href="https://last.fm/user/edwardscamera"><img src="./images/lastfm.png"></a>
-            <p>(:</p>
+            <div class="career">
+                <h3>
+                    Freelance Development<br />
+                    Mar 2021 - Present
+                </h3>
+                <p>I took up managing different software projects for businesses. This included VB.NET order systems interacting with SQL servers, as well as WordPress sites powered with PHP. This unique experience has provided me with insight into how different businesses manage their digital presence, and challanges to adapt to different technologies and workflows. Working on these projects also tested my independence, and what I am to do when there is no one to help me but the internet.</p>
+            </div>
+            <div class="career">
+                <h3>
+                    Student Mentor<br />
+                    <a href="https://kidoyo.com/" target="_blank">KidOYO</a> | Aug 2019 - Present
+                </h3>
+                <p>At KidOYO, I had the privilege of teaching aspiring coders from 8 to 18 all about the fundementals of computer programming. Languages taught ranged from making simple games in block-based coding, to making simple games in Python and JavaScript. Having to explain concepts such as these to kids helped me understand the concepts myself more, often having to break them down into the smallest of parts. The experience also provided me with collaboration skills as I sometimes taught classes with other people.</p>
+            </div>
+        </div>
+        <div class="content-card personal-projects" marker="PersonalProjects">
+            <h2>Personal Projects</h2>
+            <div class="divider">
+                <div>
+                    <img src="./assets/thumbnails/infinisweeper.png" alt="Infinisweeper">
+                    <h3>Infinisweeper</h3>
+                    <p>Unleash your strategic genius and challenge your brain in an addicting, limitless mine-clearing experience. Explore endless grids, adapt to ever-changing challenges, and compete on global leaderboards. Challenge your friends and compete for the highest score.</p>
+                </div>
+                <div>
+                    <img src="./assets/thumbnails/stick-together.png" alt="Stick Together">
+                    <h3>Stick Together</h3>
+                    <p>Take on an endless runner adventure with a powerful grappling hook. Swing through challenging terrain, collect coins, and collect every item in the shop.</p>
+                    <p>Made in 1 week for a KidOYO game jam.</p>
+                </div>
+                <div>
+                    <img src="./assets/thumbnails/limited-resources.png" alt="Limited Resources">
+                    <h3>Limited Resources</h3>
+                    <p>Smash together resources with your mouse to make new ones. Try to unlock them all! Resource ideas from my little brother.</p>
+                    <p>Made in 1 day for the KidOYO game jam.</p>
+                </div>
+            </div>
+        </div>
+        <div class="content-card" marker="FindMe">
+            <h2>Socials</h2>
+            <div class="divider">
+                <div class="social">
+                    <a target="_blank" href="https://instagram.com/edwardscamera"><i class="fa-brands fa-instagram"></i><br /><span>Instagram</span></a>
+                    <a target="_blank" href="https://linkedin.com/in/edwardscamera"><i class="fa-brands fa-linkedin"></i><br /><span>LinkedIn</span></a>
+                    <a target="_blank" href="https://github.com/edwardscamera"><i class="fa-brands fa-github"></i><br /><span>GitHub</span></a>
+                    <a target="_blank" href="https://last.fm/user/edwardscamera"><i class="fa-brands fa-lastfm"></i><br /><span>last.fm</span></a>
+                </div>
+                <div>
+                    <div id="music-status">Loading recent tracks...</div>
+                    <div id="music-mostrecenttrack">
+                        <img id="music-albumcover" src="" alt="No track loaded">
+                        <div>
+                            <span id="music-title">No track loaded</span><br />
+                            <span id="music-artist">No track loaded</span>
+                        </div>
+                        <div class="music-timestamp">No track loaded</div>
+                    </div>
+                    <table style="display: none;" id="music-smallTracks"></table>
+                </div>
+            </div>
+        </div>
+        <div class="content-card" marker="Contact">
+            <p>Feel free to reach out if you have any questions or want to connect. <a target="_blank" href="mailto:ebleselrod@gmail.com">Send me an e-mail here</a>.</p>
+        </div>
+        <div id="footer">
+            <a id="topBtn">All done?</a>
+            <span style="margin-left: auto;" id="visualLabel"></span>
         </div>
     </div>
-    <div id="rocket-container">
-        <div id="rocket" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">=></div>
-    </div>
-    <!-- Default Statcounter code for edwardscamera.com
-    http://edwardscamera.com -->
-    <script type="text/javascript">
-        var sc_project = 12571167;
-        var sc_invisible = 1;
-        var sc_security = "ac478db3"; 
-    </script>
-    <script type="text/javascript" src="https://www.statcounter.com/counter/counter.js" async></script>
-    <noscript>
-        <div class="statcounter"><a title="Web Analytics
-    Made Easy - Statcounter" href="https://statcounter.com/" target="_blank"><img class="statcounter"
-                    src="https://c.statcounter.com/12571167/0/ac478db3/1/" alt="Web Analytics Made Easy - Statcounter"
-                    referrerPolicy="no-referrer-when-downgrade"></a></div>
-    </noscript>
-    <!-- End of Statcounter Code -->
+    <script src="https://kit.fontawesome.com/6b9987c0fa.js" crossorigin="anonymous"></script>
+    <script src="./script.js"></script>
 </body>
-
 </html>
+
+<!--
+    Application name 	Personal Website
+    API key 	1f62f0c0081f372b2d4979b2ae154cbd
+    Shared secret 	bef286f16f43a4ec9daa9e9ff0388c75
+    Registered to 	edwardscamera
+-->
