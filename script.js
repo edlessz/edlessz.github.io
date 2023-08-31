@@ -2,7 +2,24 @@ const $ = (arg) => document.querySelector(arg);
 const mod = (n, m) => ((n % m) + m) % m;
 
 const title = $("#title");
-const visualData = {};
+let visualData = {};
+let visualID = null;
+
+const eventListeners = [];
+const createEventListener = (event, func) => {
+    eventListeners.push({
+        event: event,
+        func: func,
+    });
+    window.addEventListener(event, func);
+};
+const removeAllEventListeners = () => {
+    eventListeners.forEach(listener => {
+        window.removeEventListener(listener.event, listener.func);
+        eventListeners.splice(eventListeners.indexOf(listener), 1);
+    });
+};
+
 const visuals = [
     {
         "name": "Stars",
@@ -21,7 +38,7 @@ const visuals = [
             visualData.changeYT = 0;
             visualData.changeX = 0;
             visualData.changeY = 0;
-            window.addEventListener("mousemove", (evt) => {
+            createEventListener("mousemove", (evt) => {
                 const mouseX = evt.pageX - title.offsetWidth / 2;
                 const mouseY = evt.pageY - title.offsetHeight / 2;
                 const angle = Math.atan2(mouseY, mouseX);
@@ -66,7 +83,7 @@ const visuals = [
             }
             visualData.mouseYT = 0;
             visualData.mouseY = 0;
-            window.addEventListener("mousemove", (evt) => {
+            createEventListener("mousemove", (evt) => {
                 visualData.mouseYT = (evt.pageY - title.offsetHeight / 2) / (canvas.height / 2);
             });
         },
@@ -90,7 +107,7 @@ const visuals = [
             visualData.yv = 0;
             visualData.x = 0;
 
-            window.addEventListener("mousemove", (evt) => {
+            createEventListener("mousemove", (evt) => {
                 visualData.mouseX = evt.clientX;
                 visualData.mouseY = evt.clientY;
             });
@@ -189,10 +206,6 @@ window.addEventListener("load", () => {
     // Execute Visual
     const canvas = $("canvas");
     const g = canvas.getContext("2d");
-    const visualID = Math.floor(Math.random() * visuals.length);
-    $(":root").style.setProperty("--backgroundColor", visuals[visualID].background);
-    $(":root").style.setProperty("--foregroundColor", visuals[visualID].foreground);
-    $("#visualLabel").innerText = visuals[visualID].name + " | edwardscamera";
 
     const resizeCanvas = (evt) => {
         canvas.width = window.innerWidth;
@@ -201,7 +214,12 @@ window.addEventListener("load", () => {
     resizeCanvas(null);
     window.addEventListener("resize", resizeCanvas);
 
+    visualID = Math.floor(Math.random() * visuals.length);
+    $("#visualLabel").innerText = visuals[visualID].name + " | edwardscamera";
     visuals[visualID].setup(g, canvas);
+    $(":root").style.setProperty("--backgroundColor", visuals[visualID].background);
+    $(":root").style.setProperty("--foregroundColor", visuals[visualID].foreground);
+
     window.setInterval(() => {
         g.fillStyle = visuals[visualID].background;
         g.fillRect(0, 0, canvas.width, canvas.height);
@@ -237,6 +255,15 @@ window.addEventListener("load", () => {
 
     // Footer button
     $("#topBtn").addEventListener("click", () => {
+        visualData = {};
+        visualID++;
+        visualID %= visuals.length;
+        $("#visualLabel").innerText = visuals[visualID].name + " | edwardscamera";
+        removeAllEventListeners();
+        visuals[visualID].setup(g, canvas);
+        $(":root").style.setProperty("--backgroundColor", visuals[visualID].background);
+        $(":root").style.setProperty("--foregroundColor", visuals[visualID].foreground);
+        
         window.scrollTo({
             behavior: "smooth",
             top: 0,

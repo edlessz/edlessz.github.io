@@ -26,7 +26,8 @@ a {
     margin: 50px;
     display: flex;
 }
-.content-card > *:first-child { margin-top: 0px; }
+.content-card > h2:first-child { margin-top: 0px; }
+.content-card > p { margin: 0px; }
 
 @media (pointer:none), (pointer:coarse) {
     #navbar {
