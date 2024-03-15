@@ -215,7 +215,7 @@ window.addEventListener("load", () => {
     window.addEventListener("resize", resizeCanvas);
 
     visualID = Math.floor(Math.random() * visuals.length);
-    $("#visualLabel").innerText = visuals[visualID].name + " | edwardscamera";
+    $("#visualLabel").innerText = visuals[visualID].name + " | edscamera";
     visuals[visualID].setup(g, canvas);
     $(":root").style.setProperty("--backgroundColor", visuals[visualID].background);
     $(":root").style.setProperty("--foregroundColor", visuals[visualID].foreground);
@@ -227,7 +227,7 @@ window.addEventListener("load", () => {
     }, 1000 / 60);
 
     // Get last.fm data
-    const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=edwardscamera&api_key=1f62f0c0081f372b2d4979b2ae154cbd&format=json`;
+    const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=edscamera&api_key=1f62f0c0081f372b2d4979b2ae154cbd&format=json`;
     window.fetch(url).then(raw => raw.json()).then(data => {
         $("#music-status").style.display = "none";
         $("#music-mostrecenttrack").style.display = "flex";
@@ -258,7 +258,7 @@ window.addEventListener("load", () => {
         visualData = {};
         visualID++;
         visualID %= visuals.length;
-        $("#visualLabel").innerText = visuals[visualID].name + " | edwardscamera";
+        $("#visualLabel").innerText = visuals[visualID].name + " | edscamera";
         removeAllEventListeners();
         visuals[visualID].setup(g, canvas);
         $(":root").style.setProperty("--backgroundColor", visuals[visualID].background);
