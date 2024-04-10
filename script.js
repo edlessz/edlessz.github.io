@@ -1,272 +1,270 @@
 const $ = (arg) => document.querySelector(arg);
-const mod = (n, m) => ((n % m) + m) % m;
 
-const title = $("#title");
-let visualData = {};
-let visualID = null;
+const canvas = $("canvas");
+const g = canvas.getContext("2d");
 
-const eventListeners = [];
-const createEventListener = (event, func) => {
-    eventListeners.push({
-        event: event,
-        func: func,
+const loadImages = (imageUrls, prefix) => {
+    const data = {};
+    imageUrls.forEach(url => {
+        data[url] = document.createElement("img");
+        data[url].src = (prefix ?? "") + url;
     });
-    window.addEventListener(event, func);
-};
-const removeAllEventListeners = () => {
-    eventListeners.forEach(listener => {
-        window.removeEventListener(listener.event, listener.func);
-        eventListeners.splice(eventListeners.indexOf(listener), 1);
-    });
+    return data;
 };
 
-const visuals = [
-    {
-        "name": "Stars",
-        "setup": (g, canvas) => {
-            visualData.stars = [];
-            for(let i = 0; i < 200; i++) {
-                visualData.stars.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: Math.random() * 5 + 3,
-                });
-            };
-            visualData.angle = Math.random() * Math.PI * 2;
-            
-            visualData.changeXT = 0;
-            visualData.changeYT = 0;
-            visualData.changeX = 0;
-            visualData.changeY = 0;
-            createEventListener("mousemove", (evt) => {
-                const mouseX = evt.pageX - title.offsetWidth / 2;
-                const mouseY = evt.pageY - title.offsetHeight / 2;
-                const angle = Math.atan2(mouseY, mouseX);
+const images = loadImages(["cat_duck.png", "cat_halfsit.png", "cat_idle.png", "cat_jump1.png", "cat_jump2.png", "cat_walk.png"], "./assets/");
 
-                visualData.changeXT = -Math.cos(angle) * Math.abs(mouseX / (title.offsetWidth / 2));
-                visualData.changeYT = -Math.sin(angle) * Math.abs(mouseY / (title.offsetHeight / 2));
-            });
-        },
-        "draw": (g, canvas) => {
-            g.fillStyle = "#fff";
-            visualData.stars.forEach(star => {
-                g.beginPath();
-                g.arc(
-                    mod(star.x, canvas.width + star.size * 2) - star.size,
-                    mod(star.y, canvas.height + star.size * 2) - star.size,
-                    star.size, 0, Math.PI * 2);
-                g.fill();
+const resize = () => {
+    const rect = document.documentElement.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    objects = getObjects(["h1", "p", "li", "u"]);
 
-                star.x += star.size * visualData.changeX;
-                star.y += star.size * visualData.changeY;
-            });
-            visualData.changeX += (visualData.changeXT - visualData.changeX) / 15;
-            visualData.changeY += (visualData.changeYT - visualData.changeY) / 15;
-        },
-        foreground: "#fff",
-        background: "#000",
-    },
-    {
-        "name": "Clouds",
-        "setup": (g, canvas) => {
-            visualData.clouds = [];
-            visualData.img = document.createElement("img");
-            visualData.aspectRatio = 406 / 800;
-            visualData.img.src = "./assets/cloud.png";
-            const numOfClouds = is_fine ? 30 : 10;
-            for(let i = 0; i < numOfClouds; i++) {
-                visualData.clouds.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height * 2 - canvas.height,
-                    size: Math.random() * 300 + 100,
-                });
-            }
-            visualData.mouseYT = 0;
-            visualData.mouseY = 0;
-            createEventListener("mousemove", (evt) => {
-                visualData.mouseYT = (evt.pageY - title.offsetHeight / 2) / (canvas.height / 2);
-            });
-        },
-        "draw": (g, canvas) => {
-            visualData.mouseY += (visualData.mouseYT - visualData.mouseY) / 5;
-            visualData.clouds.sort((a, b) => (a.size - b.size)).forEach(cloud => {
-                g.filter = `contrast(${cloud.size / 400})`
-                g.drawImage(visualData.img, cloud.x, cloud.y - visualData.mouseY * cloud.size, cloud.size, cloud.size * visualData.aspectRatio);
-                cloud.x = mod(cloud.x + cloud.size, canvas.width + cloud.size) - cloud.size;
-                cloud.x -= cloud.size / 50;
-                g.filter = `contrast(1)`;
-            });
-        },
-        foreground: "#fff",
-        background: "#91c3c9",
-    },
-    {
-        "name": "Cookie Wallpaper",
-        "setup": (g, canvas) => {
-            visualData.y = 0;
-            visualData.yv = 0;
-            visualData.x = 0;
 
-            createEventListener("mousemove", (evt) => {
-                visualData.mouseX = evt.clientX;
-                visualData.mouseY = evt.clientY;
-            });
-        },
-        "draw": (g, canvas) => {
-            g.fillStyle = "#905ed1";
-            for(let i = 0; i < visualData.x; i++) {
-                g.fillRect((i * 2) * 30, 0, 30, window.innerHeight);
-            }
-            const width = 30;
-            const x = visualData.x * 2 * width;
-            g.fillRect(x, 0, width, visualData.y);
-            if (visualData.mouseX > x && visualData.mouseX < x + width &&
-                visualData.mouseY > visualData.y && visualData.mouseY < visualData.y + visualData.yv) {
-                    visualData.yv = -15;
-            }
-            visualData.y += visualData.yv;
-            visualData.yv += 1;
-            
-            if (visualData.y > window.innerHeight) {
-                visualData.y = 0;
-                visualData.yv = 0;
-                visualData.x += 1;
-            }
-        },
-        foreground: "#fff",
-        background: "#6632a8",
-    }
-];
+};
 
-const is_fine = matchMedia('(pointer:fine)').matches;
-const is_coarse = matchMedia('(pointer:coarse)').matches;
-
+window.addEventListener("resize", resize);
 window.addEventListener("load", () => {
-    let cascadeCards = [];
-    if (is_fine) {
-        // Setup card cascading effect
-        window.setInterval(() => {
-            if (cascadeCards.length > 0) {
-                cascadeCards[0].style.animation = "content-card 1s forwards";
-                cascadeCards = cascadeCards.slice(1);
-            }
-        }, 50);
-    }
-    // Navbar Buttons
-    const navbar = $("#navbar");
-    Array.from(navbar.children).forEach(btn => {
-        const markerTarget = btn.getAttribute("markerTarget");
-        if (markerTarget) btn.addEventListener("click", () => {
-            if (markerTarget === "Home") {
-                window.scrollTo({
-                    behavior: "smooth",
-                    top: 0,
-                });
-                return;
-            }
-            $(`[marker=${markerTarget}]`).scrollIntoView({
-                behavior: "smooth",
-                block: "center",
-            });
-        });
-    });
-    
-    if (is_fine) {
-        const evalAnimations = () => {
-            // Navbar Scroll
-            const navbarClosedWidth = parseInt(window.getComputedStyle($(":root")).getPropertyValue("--navbarClosedWidth").replace(/px/g, ""));
-            navbar.setAttribute("expanded", window.scrollY < window.innerHeight);
-            
-            const animationProgess = Math.min(window.scrollY / window.innerHeight, 1);
-            const rightHidden = -(window.innerWidth * .3) + navbarClosedWidth;
-    
-            navbar.style.right = `${animationProgess * rightHidden}px`;
-            $(":root").style.setProperty("--contentWidth", `${(window.innerWidth + (1 - animationProgess) * rightHidden) - navbarClosedWidth}px`);
-    
-            // Content Cards
-            Array.from(document.getElementsByClassName("content-card")).forEach(card => {
-                const scrollMargin = 0;
-    
-                const cardPos = card.getBoundingClientRect();
-                const cardEnabled = cardPos.top < (window.innerHeight - window.innerHeight * scrollMargin) && cardPos.bottom > window.innerHeight * scrollMargin;
-                const cardDisabled = cardPos.top > window.innerHeight;
-    
-                if (cardEnabled && !cascadeCards.includes(card)) cascadeCards.push(card);
-                if (cardDisabled) {
-                    card.style.animation = "unset";
-                    if (cascadeCards.includes(card)) cascadeCards.splice(cascadeCards.indexOf(card), 1);
-                }
-            });
-        };
-        window.addEventListener("scroll", evalAnimations);
-        window.addEventListener("resize", evalAnimations);
-        evalAnimations();    
-    }
-    
-    // Execute Visual
-    const canvas = $("canvas");
-    const g = canvas.getContext("2d");
+    resize();
 
-    const resizeCanvas = (evt) => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    };
-    resizeCanvas(null);
-    window.addEventListener("resize", resizeCanvas);
-
-    visualID = Math.floor(Math.random() * visuals.length);
-    $("#visualLabel").innerText = visuals[visualID].name + " | edscamera";
-    visuals[visualID].setup(g, canvas);
-    $(":root").style.setProperty("--backgroundColor", visuals[visualID].background);
-    $(":root").style.setProperty("--foregroundColor", visuals[visualID].foreground);
-
-    window.setInterval(() => {
-        g.fillStyle = visuals[visualID].background;
-        g.fillRect(0, 0, canvas.width, canvas.height);
-        visuals[visualID].draw(g, canvas);
-    }, 1000 / 60);
-
-    // Get last.fm data
-    const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=edscamera&api_key=1f62f0c0081f372b2d4979b2ae154cbd&format=json`;
-    window.fetch(url).then(raw => raw.json()).then(data => {
-        $("#music-status").style.display = "none";
-        $("#music-mostrecenttrack").style.display = "flex";
-        const mostRecentTrack = data.recenttracks.track[0];
-        $("#music-albumcover").src = mostRecentTrack.image.find(x => x.size === "medium")["#text"];
-        $("#music-albumcover").alt = mostRecentTrack.album["#text"];
-        $("#music-title").innerText = mostRecentTrack.name;
-        $("#music-artist").innerText = mostRecentTrack.artist["#text"];
-        $("#music-album").innerText = mostRecentTrack.album["#text"];
-        $("#music-mostrecenttrack .music-timestamp").innerText = mostRecentTrack["@attr"]?.nowplaying ? "Now Playing" : mostRecentTrack.date["#text"];
-        
-        if (is_fine) $("#music-smallTracks").style.display = "table";
-        for(let i = 1; i < 11; i++) {
-            const trackData = data.recenttracks.track[i];
-            const trackElm = document.createElement("tr");
-            trackElm.innerHTML = `
-                <td>${trackData.name}</td>
-                <td>${trackData.artist["#text"]}</td>
-                <td>${trackData.album["#text"]}</td>
-                <td class="music-timestamp">${trackData.date["#text"]}</td>
-            `;
-            $("#music-smallTracks").appendChild(trackElm);
-        };
-    });
-
-    // Footer button
-    $("#topBtn").addEventListener("click", () => {
-        visualData = {};
-        visualID++;
-        visualID %= visuals.length;
-        $("#visualLabel").innerText = visuals[visualID].name + " | edscamera";
-        removeAllEventListeners();
-        visuals[visualID].setup(g, canvas);
-        $(":root").style.setProperty("--backgroundColor", visuals[visualID].background);
-        $(":root").style.setProperty("--foregroundColor", visuals[visualID].foreground);
-        
-        window.scrollTo({
-            behavior: "smooth",
-            top: 0,
-        });
-    });
+    setTimeout(() => {
+        Input.load();
+        loop();
+        setTimeout(() => {
+            if (cat.mode !== "interact") cat.mode = "idle";
+            cat.canSwitch = true;
+        }, 20000);
+    }, 5000);
 });
+
+const cat = {
+    position: {
+        x: $("h1").getBoundingClientRect().left + 80,
+        y: -48,
+    },
+    velocity: {
+        x: 0,
+        y: 0,
+    },
+    scale: {
+        x: 48,
+        y: 48,
+    },
+    ducking: false,
+    moveSpeed: 3,
+    frame: 0,
+    facing: 1,
+    state: "cat_idle.png",
+    drawnState: "cat_idle.png",
+    transitionFrames: 0,
+
+    mode: "idle",
+    canSwitch: false,
+};
+setInterval(() => {
+    if (cat.transitionFrames > -1) cat.transitionFrames--;
+    cat.frame++;
+
+    if (cat.canSwitch && Math.random() > 0.99) {
+        if (cat.mode !== "interact") {
+            let list = ["idle", "roam"];
+            if (mouse) list.push("chase");
+            cat.ducking = false;
+            cat.velocity.x = 0;
+            cat.mode = list[Math.floor(Math.random() * list.length)];
+        }
+    }
+}, 100);
+
+
+const getObjects = (tags) => {
+    const data = [];
+    tags.forEach(tag => {
+        Array.from(document.getElementsByTagName(tag)).forEach(element => {
+            element.style.width = "fit-content";
+            const rect = element.getBoundingClientRect();
+            data.push({
+                position: {
+                    x: rect.left,
+                    y: rect.top,
+                },
+                scale: {
+                    x: rect.width,
+                    y: rect.height
+                },
+            });
+            element.style.width = "";
+        });
+    });
+    return data;
+};
+let objects = null;
+
+const draw = () => {
+    g.resetTransform();
+    g.clearRect(0, 0, canvas.width, canvas.height);
+    g.imageSmoothingEnabled = false;    
+    g.translate(cat.position.x, cat.position.y);
+    
+    if (cat.velocity.y > 0) cat.state = "cat_jump2.png";
+    else if (cat.velocity.y < 0) cat.state = "cat_jump1.png";
+    else {
+        if (cat.velocity.x !== 0) cat.state = "cat_walk.png";
+        else if (cat.ducking) cat.state ="cat_duck.png";
+        else cat.state = "cat_idle.png";    
+    }
+
+    if (cat.velocity.x !== 0) {
+        cat.facing = Math.sign(cat.velocity.x);
+    }
+    g.scale(cat.facing, 1);
+
+    g.drawImage(
+        images[cat.drawnState], ((cat.frame * 16) % images[cat.drawnState].width), 0, 16, 16,
+        cat.facing === -1 ? -cat.scale.x : 0, 0, 
+        cat.scale.x, cat.scale.y
+    );
+
+    if (cat.drawnState !== cat.state && cat.drawnState !== "cat_halfsit.png") {
+        const transitions = [
+            ["cat_idle.png", "cat_walk.png"],
+            ["cat_walk.png", "cat_idle.png"],
+            ["cat_idle.png", "cat_jump1.png"],
+            ["cat_jump2.png", "cat_idle.png"],
+            ["cat_idle.png", "cat_duck.png"],
+            ["cat_duck.png", "cat_idle.png"],
+
+            ["cat_duck.png", "cat_walk.png"],
+            ["cat_walk.png", "cat_duck.png"],
+        ];
+        if (transitions.findIndex(x => x[0] === cat.drawnState && x[1] === cat.state) > -1) {
+            cat.drawnState = "cat_halfsit.png";
+            cat.transitionFrames = 1;
+        } else {
+            cat.frame = 0;
+            cat.drawnState = cat.state;
+            cat.transitionFrames = -1;
+        }
+        
+    }
+    if (cat.transitionFrames == 0) {
+        cat.frame = 0;
+        cat.drawnState = cat.state;
+        cat.transitionFrames = -1;
+    }
+
+    /*
+    // Draw Hitboxes
+    g.fillStyle = "#f00";
+    g.fillRect(cat.position.x, cat.position.y, cat.scale.x, cat.scale.y);
+    objects.forEach(obj => {
+        g.fillRect(obj.position.x, obj.position.y, obj.scale.x, obj.scale.y);
+    });
+    */
+};
+
+const physics = () => {
+    const collidingWith = (obj, future) => {
+        return (
+            cat.position.x + (future?.x ?? 0) < obj.position.x + obj.scale.x &&
+            cat.position.x + (future?.x ?? 0) + cat.scale.x > obj.position.x &&
+            cat.position.y + (future?.y ?? 0) < obj.position.y + obj.scale.y &&
+            cat.position.y + (future?.y ?? 0) + cat.scale.y > obj.position.y
+        );
+    };
+    const colliding = (future) => {
+        if (cat.mode !== "interact") {
+            const page = $(".page").getBoundingClientRect();
+            if (cat.position.x + (future?.x ?? 0) < page.left + 64) return true;
+            if (cat.position.x + (future?.x ?? 0) + cat.scale.x > page.left + page.width - 64) return true;
+        }
+        return objects.find(x => collidingWith(x, future));
+    }
+    const onGround = colliding({ x: 0, y: 1, });
+
+    switch(cat.mode) {
+        case "idle":
+            cat.ducking = Math.floor(new Date().getTime() / 1000 / 15) % 2 === 0;
+            break;
+        case "interact":
+            cat.velocity.x = cat.moveSpeed * ((Input.keyDown["ArrowRight"] ? 1 : 0) - (Input.keyDown["ArrowLeft"] ? 1 : 0));
+            if (Input.keyDown["ArrowDown"] && onGround) cat.velocity.x = 0;
+            if (Input.keyDown["ArrowUp"] && onGround) cat.velocity.y = -4;
+            cat.ducking = Input.keyDown["ArrowDown"] ?? false;
+            break;
+        case "chase":
+            if (mouse) {
+                if (Math.abs(cat.position.x - mouse.x) > 48) cat.velocity.x = -cat.moveSpeed * Math.sign(cat.position.x - mouse.x);
+                else cat.velocity.x = 0;
+                if (cat.position.y - mouse.y < cat.scale.y / 2) {
+                    cat.ducking = true;
+                } else {
+                    cat.ducking = false;
+                    if (onGround) cat.velocity.y = -Math.min(4, (cat.position.y - mouse.y) / 16);
+                }
+            }
+            break;
+        case "roam":
+            if (Math.random() < 0.01) {
+                cat.velocity.x = (cat.position.x / window.innerWidth) > 0.5 ? -1 : 1;
+                if (Math.random() > 0.7) cat.velocity.x = Math.random() > 0.5 ? -1 : 1;
+                setTimeout(() => {
+                    cat.velocity.x = 0;
+                }, 2000 * Math.random() + 1000);
+            }
+            break;
+    }
+
+    if (cat.mode !== "chase" && mouse && onGround && (cat.position.x + cat.scale.x / 2 - mouse.x) ** 2 + (cat.position.y + cat.scale.y / 2 - mouse.y) ** 2 < cat.scale.x ** 2) {
+        cat.velocity.y = -4;
+    }
+    if (cat.mode !== "interact" && (Input.keyDown["ArrowLeft"] || Input.keyDown["ArrowUp"] || Input.keyDown["ArrowRight"])) cat.mode = "interact";
+   
+    if (!onGround) cat.velocity.y += 0.1;
+
+    cat.position.x += cat.velocity.x;
+    if (colliding()) {
+        while (colliding()) {
+            cat.position.x -= Math.sign(cat.velocity.x) === 0 ? -1 : Math.sign(cat.velocity.x);
+        }
+        cat.velocity.x = 0;
+    }
+    cat.position.y += cat.velocity.y;
+    if (colliding()) {
+        while (colliding()) {
+            cat.position.y -= Math.sign(cat.velocity.y) === 0 ? -1 : Math.sign(cat.velocity.y);
+        }
+        cat.velocity.y = 0;
+    }
+
+    if (cat.position.y > document.documentElement.getBoundingClientRect().height + cat.scale.y) cat.position.y = -cat.scale.y;
+};
+
+const loop = () => {
+    physics();
+    draw();
+    requestAnimationFrame(loop);
+};
+
+let mouse = null;
+window.addEventListener("mousemove", (evt) => {
+    mouse = {
+        x: evt.clientX + window.scrollX,
+        y: evt.clientY + window.scrollY,
+    };
+});
+
+class Input {
+    static keyDown = {};
+    static load() {
+        window.addEventListener("keydown", evt => {
+            Input.keyDown[evt.code] = true;
+            if (["Space","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(evt.code)) {
+                evt.preventDefault();
+            }
+        });
+        window.addEventListener("keyup", evt => {
+            Input.keyDown[evt.code] = false;
+        });
+    }
+}
