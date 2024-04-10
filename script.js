@@ -19,8 +19,6 @@ const resize = () => {
     canvas.width = rect.width;
     canvas.height = rect.height;
     objects = getObjects(["h1", "p", "li", "u"]);
-
-
 };
 
 window.addEventListener("resize", resize);
