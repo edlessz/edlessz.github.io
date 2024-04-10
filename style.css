@@ -6,35 +6,20 @@ body {
     justify-content: center;
 }
 .page {
-    padding: 1in;
     width: 8.5in;
     min-height: 11in;
-    filter: drop-shadow(0 0 4px #000);
-    background-color: white;
+    padding: 1in;
 
+    background-color: white;
+    filter: drop-shadow(0 0 4px #000);
+    
     display: flex;
     flex-direction: column;
     gap: 1em;
 }
-
-@keyframes flip {
-    from {
-        transform: rotateY(0deg);
-    }
-    to {
-        transform: rotateY(359deg);
-    }
-}
-
-#render {
+canvas {
     position: absolute;
-    opacity: 0.5;
-    left: 0;
-    top: 0;
-}
-
-.physics {
-    margin: 0px;
-    max-width: 8.5in;
-    width: fit-content;
+    top: 0px;
+    left: 0px;
+    pointer-events: none;
 }
