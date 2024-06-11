@@ -9,7 +9,7 @@ const lastfm = async (user, method) => {
 
 lastfm('edscamera', 'user.getRecentTracks').then(data => {
     const newestTrack = data.recenttracks.track[0];
-    console.log(newestTrack);
+    
     $("#track-title").innerText = newestTrack.name;
     $("#track-artist").innerText = newestTrack.artist['#text'];
     $("#track-album").innerText = newestTrack.album['#text'];
