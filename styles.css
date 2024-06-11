@@ -42,7 +42,7 @@ body {
     flex-direction: column;
     gap: 1em;
 
-    background-color: rgba(255, 255, 255 0.75);
+    background-color: rgba(255, 255, 255, 0.75);
     box-sizing: border-box;
 }
 .pink { border: 0.25em dashed var(--pink); }
