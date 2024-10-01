@@ -30,7 +30,9 @@ const refreshTrack = () => {
     $$(".track-display").forEach((x) => (x.style.opacity = 1));
   });
 };
+
 refreshTrack();
+setInterval(refreshTrack, 1000 * 60 * 2); // 2 minutes
 
 const canvas = $("canvas");
 const g = canvas.getContext("2d");
