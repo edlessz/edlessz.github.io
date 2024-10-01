@@ -6,6 +6,10 @@
   --pink: #ff0099;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 h1,
 h2,
 h3,
@@ -42,9 +46,16 @@ body {
   flex-direction: column;
   gap: 1em;
 
-  margin: 1em;
+  padding: 1em;
   width: 80%;
   max-width: 64em;
+  min-height: 100vh;
+}
+
+@media (max-width: 64em) {
+  #container {
+    width: 100%;
+  }
 }
 
 .grid {
@@ -89,7 +100,9 @@ body {
     flex-direction: column;
   }
 }
-.track-timestamp { text-align: right; }
+.track-timestamp {
+  text-align: right;
+}
 #track-image {
   width: 4em;
   aspect-ratio: 1;
@@ -111,6 +124,9 @@ body {
   cursor: pointer;
   transition: 0.3s ease-in-out;
   user-select: none;
+
+  margin-top: auto;
+  align-self: center;
 }
 
 .hide {
