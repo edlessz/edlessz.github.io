@@ -68,17 +68,28 @@ body {
 }
 
 .track-display {
-  display: none;
+  opacity: 0;
+  transition: 100ms ease-in-out;
 }
 .track {
-  align-items: center;
+  display: flex;
+  flex-direction: column;
   gap: 1em;
-  padding: 0 1em;
+
+  padding: 1em;
+  box-shadow: 0 0 0.25em black;
 }
 .track > div {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+  }
 }
+.track-timestamp { text-align: right; }
 #track-image {
   width: 4em;
   aspect-ratio: 1;

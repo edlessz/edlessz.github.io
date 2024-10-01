@@ -9,18 +9,28 @@ const lastfm = async (user, method) => {
   return data;
 };
 
-lastfm("edscamera", "user.getRecentTracks").then((data) => {
-  const newestTrack = data.recenttracks.track[0];
+const refreshTrack = () => {
+  $$(".track-display").forEach((x) => (x.style.opacity = 0));
+  lastfm("edscamera", "user.getRecentTracks").then((data) => {
+    const newestTrack = data.recenttracks.track[0];
 
-  $("#track-title").innerText = newestTrack.name;
-  $("#track-artist").innerText = newestTrack.artist["#text"];
-  $("#track-album").innerText = newestTrack.album["#text"];
-  $("#track-image").src = newestTrack.image.find((x) => x.size === "large")[
-    "#text"
-  ];
+    $("#track-title").innerText = newestTrack.name;
+    $(
+      "#track-artist"
+    ).innerText = `${newestTrack.artist["#text"]} • ${newestTrack.album["#text"]}`;
+    $("#track-image").src = newestTrack.image.find((x) => x.size === "large")[
+      "#text"
+    ];
 
-  $$(".track-display").forEach((x) => (x.style.display = "flex"));
-});
+    const timestamp = newestTrack["@attr"]?.nowplaying
+      ? "just now"
+      : fromNow(`${newestTrack.date["#text"]} GMT`);
+    $(".track-timestamp").innerText = timestamp;
+
+    $$(".track-display").forEach((x) => (x.style.opacity = 1));
+  });
+};
+refreshTrack();
 
 const canvas = $("canvas");
 const g = canvas.getContext("2d");
@@ -83,3 +93,30 @@ window.addEventListener("resize", () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 });
+
+const fromNow = (date) => {
+  const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+  const years = Math.floor(seconds / 31536000);
+  const months = Math.floor(seconds / 2592000);
+  const days = Math.floor(seconds / 86400);
+
+  if (days > 548) return `${years} years ago`;
+  if (days >= 320) return "a year ago";
+  if (days >= 45) return `${months} months ago`;
+  if (days >= 26) return "a month ago";
+
+  const hours = Math.floor(seconds / 3600);
+  if (hours >= 36) return `${days} days ago`;
+  if (hours >= 22) return "a day ago";
+
+  const minutes = Math.floor(seconds / 60);
+  if (minutes >= 90) return `${hours} hours ago`;
+  if (minutes >= 45) return "an hour ago";
+  if (minutes >= 2) return `${minutes} minutes ago`;
+
+  if (seconds >= 45) return "a minute ago";
+  if (seconds >= 10) return `${seconds} seconds ago`;
+  if (seconds < 10) return "just now";
+
+  return new Date(date).toString();
+};
