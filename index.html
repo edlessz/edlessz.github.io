@@ -1,79 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>edscamera</title>
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./styles.css" />
     <script defer src="./script.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <canvas></canvas>
     <div id="container">
-        <div class="box pink">
-            <h1>edscamera</h1>
-            <p>Hey! I'm Ed, an engineer with an excitement for developing robust applications and systems. As a Computer Science student at Stony Brook University, I've balanced my studies with hands-on experience in various roles. From designing and building applications to mentoring other learners, I love diving into new challenges and expanding my skill set. I thrive in both team settings and remote environments, always aiming to create impactful and user-friendly solutions.</p>
+      <div class="box pink">
+        <h1>edscamera</h1>
+        <p>
+          Hey! I'm Ed, an engineer with an excitement for developing robust
+          applications and systems. As a Computer Science student at Stony Brook
+          University, I've balanced my studies with hands-on experience in
+          various roles. From designing and building applications to mentoring
+          other learners, I love diving into new challenges and expanding my
+          skill set. I thrive in both team settings and remote environments,
+          always aiming to create impactful and user-friendly solutions.
+        </p>
+      </div>
+      <div class="grid">
+        <div class="box">
+          <h3>Experience</h3>
+          <div>
+            <span class="bold"
+              >North Atlantic Industries - Full-Stack Engineer Intern</span
+            >:
+            <p>
+              Designed and developed applications for internal use, providing
+              organization and efficiency.
+            </p>
+          </div>
+          <div>
+            <span class="bold">KidOYO - Student Mentor</span>:
+            <p>
+              Taught kids aged 8-18 general programming & game development
+              skills, including visual block programming with Scratch, game
+              engine development with GameMaker Studio 2, and other languages
+              such as JavaScript and Python.
+            </p>
+          </div>
+          <div>
+            <span class="bold">Freelance Full-Stack Engineer</span>:
+            <p>
+              Dealt with a multitude of technologies while developing websites
+              and applications for clients, including but not limited to VB.NET,
+              C#, SQL, PHP, and WordPress
+            </p>
+          </div>
+          <h3>Education</h3>
+          <ul>
+            <li>Stony Brook University: BS in Computer Science (2023 - )</li>
+            <li>AP Computer Science A (2020)</li>
+            <li>AP Computer Science Principles (2021)</li>
+          </ul>
         </div>
-        <div class="grid">
-            <div class="box">
-                <h3>Experience</h3>
-                <div>
-                    <span class="bold">North Atlantic Industries - Full-Stack Engineer Intern</span>: 
-                    <p>Designed and developed applications for internal use, providing organization and efficiency.</p>
-                </div>
-                <div>
-                    <span class="bold">KidOYO - Student Mentor</span>: 
-                    <p>Taught kids aged 8-18 general programming & game development skills, including visual block programming with Scratch, game engine development with GameMaker Studio 2, and other languages such as JavaScript and Python.</p>
-                </div>
-                <div>
-                    <span class="bold">Freelance Full-Stack Engineer</span>: 
-                    <p>Dealt with a multitude of technologies while developing websites and applications for clients, including but not limited to VB.NET, C#, SQL, PHP, and WordPress</p>
-                </div>
-                <h3>Education</h3>
-                <ul>
-                    <li>Stony Brook University: BS in Computer Science (2023 - )</li>
-                    <li>AP Computer Science A (2020)</li>
-                    <li>AP Computer Science Principles (2021)</li>
-                </ul>
-            </div>
-            <div class="box">
-                <h3>Projects</h3>
-                <div>
-                    <a href="infinisweeper/" target="_blank" rel="noopener noreferrer"><span class="bold">Infinisweeper (2022)</span></a>
-                    <p>A Minesweeper clone with an infinite board size, 2 game modes, and a scoring system. Built with HTML5 and Google Firebase.</p>
-                </div>
-                <div>
-                    <a href="array-map-creator/" target="_blank" rel="noopener noreferrer"><span class="bold">Array Map Creator (2018)</span></a>
-                    <p>A web-based pixel art tool that can export drawings into matrices for easy game development.</p>
-                </div>
-                <div>
-                    <a href="stick-together/" target="_blank" rel="noopener noreferrer"><span class="bold">Stick Together (2021)</span></a>
-                    <p>A simple web-based runner minigame made for a game jam in 1 week.</p>
-                </div>
-            </div>
-            <div class="box">
-                <h3>Find Me</h3>
-                <ul>
-                    <li><a href="https://linkedin.com/in/edscamera" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
-                    <li><a href="https://instagram.com/edscamera29" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-                    <li><a href="https://github.com/edscamera" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-                    <li><a href="https://last.fm/user/edscamera" target="_blank" rel="noopener noreferrer">last.fm</a></li>
-                </ul>
-                <h3 class="track-display">What I'm Listening To</h3>
-                <div class="track-display track">
-                    <img id="track-image" />
-                    <div>
-                        <span id="track-title" class="bold"></span><br />
-                        <span id="track-artist"></span>
-                        <span id="track-album"></span>
-                    </div>
-                </div>
-            </div>
+        <div class="box">
+          <h3>Projects</h3>
+          <div>
+            <a href="infinisweeper/" target="_blank" rel="noopener noreferrer"
+              ><span class="bold">Infinisweeper (2022)</span></a
+            >
+            <p>
+              A Minesweeper clone with an infinite board size, 2 game modes, and
+              a scoring system. Built with HTML5 and Google Firebase.
+            </p>
+          </div>
+          <div>
+            <a
+              href="array-map-creator/"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><span class="bold">Array Map Creator (2018)</span></a
+            >
+            <p>
+              A web-based pixel art tool that can export drawings into matrices
+              for easy game development.
+            </p>
+          </div>
+          <div>
+            <a href="stick-together/" target="_blank" rel="noopener noreferrer"
+              ><span class="bold">Stick Together (2021)</span></a
+            >
+            <p>
+              A simple web-based runner minigame made for a game jam in 1 week.
+            </p>
+          </div>
         </div>
+        <div class="box">
+          <h3>Find Me</h3>
+          <ul>
+            <li>
+              <a
+                href="https://linkedin.com/in/edscamera"
+                target="_blank"
+                rel="noopener noreferrer"
+                >LinkedIn</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://instagram.com/edscamera29"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Instagram</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://github.com/edscamera"
+                target="_blank"
+                rel="noopener noreferrer"
+                >GitHub</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://last.fm/user/edscamera"
+                target="_blank"
+                rel="noopener noreferrer"
+                >last.fm</a
+              >
+            </li>
+          </ul>
+          <h3 class="track-display">What I'm Listening To</h3>
+          <div class="track-display track">
+            <img id="track-image" />
+            <div>
+              <span id="track-title" class="bold"></span><br />
+              <span id="track-artist"></span>
+              <span id="track-album"></span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="footer">
-        <span id="btn_launch">Launch</span>
+      <span id="btn_launch">Launch</span>
     </div>
     <div id="matter"></div>
-</body>
+  </body>
 </html>
