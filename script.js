@@ -54,11 +54,13 @@ const animate = () => {
   const loop = () => {
     const secondsEllapsed = (performance.now() - start) / 1000;
     const shakeMult = getShakeMult(secondsEllapsed);
-    const randomX = (Math.random() - 0.5) * shakeMult;
-    const randomY = (Math.random() - 0.5) * shakeMult;
+    if (shakeMult >= 0.001) {
+      const randomX = (Math.random() - 0.5) * shakeMult;
+      const randomY = (Math.random() - 0.5) * shakeMult;
 
-    container.style.transform = `translate(${randomX}em, ${randomY}em)`;
-    canvas.style.opacity = getSpaceMult(secondsEllapsed);
+      container.style.transform = `translate(${randomX}em, ${randomY}em)`;
+      canvas.style.opacity = getSpaceMult(secondsEllapsed);
+    }
 
     g.fillStyle = "black";
     g.fillRect(0, 0, canvas.width, canvas.height);
