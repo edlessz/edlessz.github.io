@@ -24,19 +24,12 @@ body {
   justify-content: center;
   align-items: center;
   color: white;
-  gap: 2rem;
 
   font-family: "Lilita One", serif;
 
   div {
     font-size: 12rem;
   }
-  span {
-    margin-bottom: 2em;
-  }
-
-  -webkit-mask: var(--mask);
-  mask: var(--mask);
 }
 
 .socials {
@@ -51,9 +44,9 @@ body {
   i {
     color: var(--accent);
     cursor: pointer;
-    transition: 150ms ease-in-out;
+    transition: 150ms ease-out;
     &:hover {
-      transform: scale(1.2);
+      transform: scale(1.25);
     }
   }
 }
