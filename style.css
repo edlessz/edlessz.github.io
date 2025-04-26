@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Lilita+One&display=swap");
 :root {
   --accent: hsl(0deg, 72%, 60%);
+  --angle: 90deg;
 }
 
 * {
@@ -10,43 +11,69 @@
 
 body {
   margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.header-container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-}
 
-.top {
-  background-color: var(--accent);
-  min-height: 50vh;
+  div:first-child {
+    flex: 1;
+    background-color: var(--accent);
 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
 
-  font-family: "Lilita One", serif;
+    font-family: "Lilita One", serif;
 
-  div {
-    font-size: 12rem;
+    h1 {
+      font-size: 14em;
+      background: linear-gradient(var(--angle), #ccc, #fff);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      user-select: none;
+    }
+  }
+  div:last-child {
+    flex: 1;
+    align-items: center;
+
+    display: flex;
+    gap: 2.5rem;
+    font-size: 2rem;
+    justify-content: center;
+
+    a {
+      color: var(--accent);
+      cursor: pointer;
+      transition: 150ms ease-out;
+
+      i {
+        animation: fadeUp 0.4s ease-out forwards;
+        opacity: 0;
+      }
+
+      &:hover {
+        transform: scale(1.25) translateY(0);
+      }
+    }
   }
 }
 
-.socials {
-  flex-grow: 1;
-  align-items: center;
-
-  display: flex;
-  gap: 1rem;
-  font-size: 2rem;
-  justify-content: center;
-
-  i {
-    color: var(--accent);
-    cursor: pointer;
-    transition: 150ms ease-out;
-    &:hover {
-      transform: scale(1.25);
-    }
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
